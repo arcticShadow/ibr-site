@@ -34,8 +34,18 @@ jobs:
       - name: Install validator
         run: pip install --quiet html5validator
 
+      # Errors only, and HTML only.
+      #
+      # --also-check-css is deliberately off. The Nu checker bundles an old CSS
+      # parser that rejects colour-scheme, text-wrap, margin-inline, 100dvh,
+      # min(), @view-transition and view-transition-name as "properties that
+      # don't exist". They all exist and all ship in current browsers, so the
+      # CSS check produces nothing but false negatives against this stylesheet.
+      #
+      # --show-warnings is off for the same reason: it still advises polyfilling
+      # <dialog> and inputmode.
       - name: Validate HTML
-        run: html5validator --root site --also-check-css --show-warnings
+        run: html5validator --root site
 
       - name: Check links
         uses: lycheeverse/lychee-action@v2
