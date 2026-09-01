@@ -524,6 +524,7 @@ a {
 .nav-toggle {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   font: inherit;
   font-weight: 700;
@@ -532,11 +533,29 @@ a {
   background: var(--bg-sunken);
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius);
-  padding: 0.5rem 0.8rem;
+  /* Square and icon-only on small screens: with the theme button alongside,
+     the word "Menu" pushed the header onto a second line at 375px. */
+  inline-size: 2.6rem;
+  block-size: 2.6rem;
+  padding: 0;
   cursor: pointer;
 
+  & .nav-toggle__label {
+    display: none;
+  }
+
+  @media (width >= 27rem) {
+    inline-size: auto;
+    block-size: auto;
+    padding: 0.5rem 0.8rem;
+
+    & .nav-toggle__label {
+      display: inline;
+    }
+  }
+
   & svg {
-    width: 1.05rem;
+    width: 1.15rem;
   }
 
   @media (width >= 60rem) {
