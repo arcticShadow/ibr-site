@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 72" role="img" aria-label="ibr">
+  <style>
+    .mark { fill: #0c2149; }
+    .bar  { fill: #d9530f; }
+    @media (prefers-color-scheme: dark) {
+      .mark { fill: #eef2f8; }
+      .bar  { fill: #ff8b4a; }
+    }
+  </style>
+  <path class="mark" d="M10 8h10v12H10z"/>
+  <path class="mark" d="M10 26h10v34H10z"/>
+  <path class="mark" fill-rule="evenodd" d="M32 8h10v52H32zM42 26h17a17 17 0 0 1 0 34H42zm10 10v14h7a7 7 0 0 0 0-14z"/>
+  <path class="mark" d="M88 26h10v34H88z"/>
+  <path class="mark" d="M98 40a14 14 0 0 1 14-14v10a4 4 0 0 0-4 4z"/>
+  <rect class="bar" x="10" y="66" width="108" height="6" rx="3"/>
+</svg>

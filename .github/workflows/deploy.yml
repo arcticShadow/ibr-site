@@ -1,18 +1,62 @@
-name: Deploy to GitHub Pages
+# Deploys site/ to GitHub Pages exactly as it is committed.
+#
+# Nothing here compiles, bundles, minifies or otherwise transforms the source.
+# The checks below only read the files. What is in site/ is what ships.
+
+name: Deploy
+
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
-  deploy:
+  check:
+    name: Validate HTML and links
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validator
+        run: pip install --quiet html5validator
+
+      - name: Validate HTML
+        run: html5validator --root site --also-check-css --show-warnings
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --base site
+            --accept 200,206,429
+            --exclude-path site/assets
+            'site/**/*.html'
+          fail: true
+
+  deploy:
+    name: Deploy to Pages
+    needs: check
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -24,3 +68,23 @@ jobs:
           path: site
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  lighthouse:
+    name: Lighthouse
+    needs: deploy
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Audit the deployed pages
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            https://arcticshadow.github.io/ibr-site/
+            https://arcticshadow.github.io/ibr-site/retubing.html
+            https://arcticshadow.github.io/ibr-site/contact.html
+          configPath: ./.github/lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

@@ -1,0 +1,15 @@
+# PRE-LAUNCH. This site is a proposal and has not been commissioned by
+# Inflatable Boat Repairs Ltd. It carries the real business name, phone number
+# and address, so it is blocked from indexing to make sure it can never compete
+# with or be mistaken for their actual listing.
+#
+# BEFORE GO-LIVE: replace everything below with the two commented lines, and
+# remove the <meta name="robots" content="noindex, nofollow"> from every page.
+# See GO-LIVE.md.
+
+User-agent: *
+Disallow: /
+
+# User-agent: *
+# Allow: /
+# Sitemap: https://ibr.co.nz/sitemap.xml

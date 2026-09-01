@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="ibr">
+  <rect width="64" height="64" rx="12" fill="#0c2149"/>
+  <g fill="#ffffff" transform="translate(7 10) scale(0.39)">
+    <path d="M10 8h10v12H10z"/>
+    <path d="M10 26h10v34H10z"/>
+    <path fill-rule="evenodd" d="M32 8h10v52H32zM42 26h17a17 17 0 0 1 0 34H42zm10 10v14h7a7 7 0 0 0 0-14z"/>
+    <path d="M88 26h10v34H88z"/>
+    <path d="M98 40a14 14 0 0 1 14-14v10a4 4 0 0 0-4 4z"/>
+  </g>
+  <rect x="12" y="47" width="40" height="5" rx="2.5" fill="#d9530f"/>
+</svg>
