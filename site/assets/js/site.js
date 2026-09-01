@@ -33,20 +33,47 @@ if (lightbox && typeof lightbox.showModal === 'function') {
   const img = lightbox.querySelector('img');
   const title = lightbox.querySelector('.lightbox__cap b');
   const body = lightbox.querySelector('.lightbox__cap span');
+  const count = lightbox.querySelector('.lightbox__count');
+  const figures = [...document.querySelectorAll('.gallery .shot')];
+  let current = 0;
 
-  document.querySelectorAll('.shot__btn').forEach((btn) => {
+  const show = (i) => {
+    // Wrap at both ends so the gallery is a loop, not a dead end.
+    current = (i + figures.length) % figures.length;
+    const fig = figures[current];
+    const source = fig.querySelector('img');
+    img.src = source.currentSrc || source.src;
+    img.alt = source.alt;
+    img.width = source.naturalWidth || 400;
+    img.height = source.naturalHeight || 267;
+    title.textContent = fig.querySelector('figcaption b').textContent;
+    body.textContent = fig.querySelector('figcaption span').textContent;
+    count.textContent = `${current + 1} of ${figures.length}`;
+  };
+
+  figures.forEach((fig, i) => {
+    const btn = fig.querySelector('.shot__btn');
+    if (!btn) return;
     btn.hidden = false;
     btn.addEventListener('click', () => {
-      const fig = btn.closest('figure');
-      const source = fig.querySelector('img');
-      img.src = source.currentSrc || source.src;
-      img.alt = source.alt;
-      img.width = source.naturalWidth || 400;
-      img.height = source.naturalHeight || 267;
-      title.textContent = fig.querySelector('figcaption b').textContent;
-      body.textContent = fig.querySelector('figcaption span').textContent;
+      show(i);
       lightbox.showModal();
     });
+  });
+
+  lightbox.querySelectorAll('.lightbox__nav').forEach((btn) => {
+    btn.addEventListener('click', () => show(current + Number(btn.dataset.step)));
+  });
+
+  lightbox.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      show(current + 1);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      show(current - 1);
+    }
+    // Escape is handled natively by <dialog>.
   });
 
   lightbox
@@ -56,6 +83,12 @@ if (lightbox && typeof lightbox.showModal === 'function') {
   // Click the backdrop (i.e. the dialog element itself) to dismiss.
   lightbox.addEventListener('click', (e) => {
     if (e.target === lightbox) lightbox.close();
+  });
+
+  // Send focus back to the photo the viewer was last looking at, not the one
+  // they opened from.
+  lightbox.addEventListener('close', () => {
+    figures[current]?.querySelector('.shot__btn')?.focus();
   });
 }
 

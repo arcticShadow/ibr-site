@@ -891,9 +891,19 @@ table {
   grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr));
   list-style: none;
   padding: 0;
+
+  /* Grid already stretches each <li> to its row height, but the figure inside
+     only took its content height — so cards in a row ended up ragged. Making
+     the li a grid container stretches the figure to fill it, which levels
+     every card in a row to the tallest without affecting other rows. */
+  & > li {
+    display: grid;
+  }
 }
 
 .shot {
+  /* Containing block for the .shot__btn overlay. */
+  position: relative;
   margin: 0;
   background: var(--bg-raised);
   border: 1px solid var(--rule);
@@ -925,23 +935,54 @@ table {
 }
 
 /* Progressive: the photo is always in the page, and this control only appears
-   once the script can actually open the lightbox. */
+   once the script can actually open the lightbox. It then covers the photo, so
+   the picture itself is the thing you click — the label lives in the
+   accessible name rather than on screen. */
 .shot__btn {
-  display: inline-block;
-  margin-block-start: 0.7rem;
-  padding: 0.35rem 0.75rem;
-  font: inherit;
-  font-size: var(--step--1);
-  font-weight: 700;
-  color: var(--link);
-  background: var(--bg-sunken);
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  aspect-ratio: 3 / 2;
+  padding: 0.6rem;
+  border: 0;
+  background: transparent;
   cursor: zoom-in;
+  display: grid;
+  place-items: end end;
+  font: inherit;
+  color: #fff;
 
-  &:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  & .shot__zoom {
+    display: grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: 999px;
+    background: rgb(7 22 52 / 55%);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 120ms ease, transform 120ms ease;
+  }
+
+  & svg {
+    inline-size: 1.05rem;
+    block-size: 1.05rem;
+  }
+
+  &:hover .shot__zoom,
+  &:focus-visible .shot__zoom {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Touch has no hover, so keep the affordance permanently visible there. */
+@media (hover: none) {
+  .shot__btn .shot__zoom {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -964,6 +1005,11 @@ dialog.lightbox {
   max-height: calc(100dvh - 2rem);
   color: var(--text);
 
+  /* The reset's `* { margin: 0 }` outranks the UA's `dialog { margin: auto }`,
+     which is what centres a modal dialog — without this it pins to the top
+     left corner. */
+  margin: auto;
+
   &::backdrop {
     background: rgb(4 9 20 / 82%);
     backdrop-filter: blur(3px);
@@ -983,7 +1029,7 @@ dialog.lightbox {
   }
 
   & .lightbox__cap {
-    padding: 1rem 1.1rem;
+    padding: 1rem 1.1rem 0.75rem;
     font-size: var(--step--1);
     color: var(--text-muted);
 
@@ -991,6 +1037,43 @@ dialog.lightbox {
       display: block;
       color: var(--brand);
       font-size: var(--step-0);
+    }
+  }
+
+  & .lightbox__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.6rem 0.6rem;
+    border-block-start: 1px solid var(--rule);
+  }
+
+  & .lightbox__count {
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+  }
+
+  & .lightbox__nav {
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    color: var(--link);
+    cursor: pointer;
+
+    & svg {
+      inline-size: 1.2rem;
+      block-size: 1.2rem;
+    }
+
+    &:hover {
+      border-color: var(--accent);
+      color: var(--accent);
     }
   }
 
@@ -1002,9 +1085,9 @@ dialog.lightbox {
     color: #fff;
     border: 0;
     border-radius: 999px;
-    width: 2.2rem;
-    height: 2.2rem;
-    font-size: 1.2rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.35rem;
     cursor: pointer;
     line-height: 1;
   }
