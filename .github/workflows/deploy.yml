@@ -47,14 +47,15 @@ jobs:
       - name: Validate HTML
         run: html5validator --root site
 
+      # No --base: every link in the site is relative, and lychee resolves
+      # those against each file's own location, which is what we want.
       - name: Check links
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --no-progress
-            --base site
             --accept 200,206,429
-            --exclude-path site/assets
+            --max-retries 2
             'site/**/*.html'
           fail: true
 
