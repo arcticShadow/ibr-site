@@ -53,6 +53,10 @@
   --accent-ink: #ffffff;
   --link: var(--navy-600);
   --brand: var(--navy-800);
+  /* The logo badge inverts between themes so it always reads as a solid
+     block against the header. */
+  --brand-field: var(--navy-800);
+  --brand-on-field: #ffffff;
   --focus: var(--hi-500);
   --shadow: 0 1px 2px rgb(7 22 52 / 8%), 0 8px 24px -12px rgb(7 22 52 / 22%);
   --shadow-lift: 0 2px 4px rgb(7 22 52 / 10%), 0 16px 40px -16px rgb(7 22 52 / 30%);
@@ -95,6 +99,8 @@
     --accent-ink: #24140a;
     --link: #8db4f0;
     --brand: #d7e4fb;
+    --brand-field: #e8eefb;
+    --brand-on-field: #0c2149;
     --focus: #ff8b4a;
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px -12px rgb(0 0 0 / 70%);
     --shadow-lift: 0 2px 4px rgb(0 0 0 / 50%), 0 16px 40px -16px rgb(0 0 0 / 80%);
@@ -117,6 +123,8 @@
   --accent-ink: #24140a;
   --link: #8db4f0;
   --brand: #d7e4fb;
+  --brand-field: #e8eefb;
+  --brand-on-field: #0c2149;
   --focus: #ff8b4a;
   --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px -12px rgb(0 0 0 / 70%);
   --shadow-lift: 0 2px 4px rgb(0 0 0 / 50%), 0 16px 40px -16px rgb(0 0 0 / 80%);
@@ -385,7 +393,8 @@ a {
   & .site-header__inner {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
     padding-block: 0.7rem;
   }
 }
@@ -401,10 +410,26 @@ a {
   flex: 0 1 auto;
   min-width: 0;
 
-  & :is(svg, img) {
-    width: 2.6rem;
-    height: auto;
+  /* A solid brand badge rather than bare letterforms — at header size the
+     outline mark had no presence against a white page. Inlined (not an <img>)
+     so it follows the theme toggle; an <img>-referenced SVG only ever sees
+     the OS setting. */
+  & .logo__mark {
+    width: 2.5rem;
+    height: 2.5rem;
     flex: none;
+  }
+
+  & .logo__field {
+    fill: var(--brand-field);
+  }
+
+  & .logo__letters {
+    fill: var(--brand-on-field);
+  }
+
+  & .logo__bar {
+    fill: var(--accent);
   }
 
   & .logo__text {
@@ -446,8 +471,57 @@ a {
   }
 }
 
-.nav-toggle {
+.site-header__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-inline-start: auto;
+  flex: none;
+
+  @media (width >= 60rem) {
+    margin-inline-start: 0.75rem;
+  }
+}
+
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  inline-size: 2.6rem;
+  block-size: 2.6rem;
+  padding: 0;
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+
+  & svg {
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+  }
+
+  /* Show the icon for the theme you'd switch TO. */
+  & .icon-sun {
+    display: none;
+  }
+
+  &[data-theme="dark"] {
+    & .icon-sun {
+      display: block;
+    }
+
+    & .icon-moon {
+      display: none;
+    }
+  }
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.nav-toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;

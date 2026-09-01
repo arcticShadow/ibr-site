@@ -3,6 +3,47 @@
    the <noscript> rule, the gallery falls back to plain links, and the enquiry
    form falls back to a normal mailto: submission. */
 
+/* -- Theme toggle -------------------------------------------------------- */
+
+/* The CSS already follows the OS setting on its own, so without this script
+   the button stays hidden and the site simply respects the system preference.
+   The inline script in <head> applies a stored choice before first paint. */
+
+const themeBtn = document.querySelector('.theme-toggle');
+
+if (themeBtn) {
+  const system = matchMedia('(prefers-color-scheme: dark)');
+  const active = () =>
+    document.documentElement.dataset.theme ||
+    (system.matches ? 'dark' : 'light');
+
+  const sync = () => {
+    const dark = active() === 'dark';
+    themeBtn.dataset.theme = dark ? 'dark' : 'light';
+    themeBtn.setAttribute(
+      'aria-label',
+      dark ? 'Switch to the light theme' : 'Switch to the dark theme'
+    );
+  };
+
+  themeBtn.hidden = false;
+  sync();
+
+  themeBtn.addEventListener('click', () => {
+    const next = active() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem('ibr-theme', next);
+    } catch {
+      // Private browsing, or storage disabled. The choice just won't persist.
+    }
+    sync();
+  });
+
+  // Follow the OS if the visitor has never made an explicit choice.
+  system.addEventListener('change', sync);
+}
+
 /* -- Mobile nav ---------------------------------------------------------- */
 
 const toggle = document.querySelector('.nav-toggle');

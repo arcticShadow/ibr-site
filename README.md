@@ -59,6 +59,7 @@ Note the phone number also appears in `tel:+6421759223` links and in
 | Current booking / season message | `index.html`, the block marked `<!-- EDIT ME -->` |
 | Opening hours | `.callbar` in every page, plus `contact.html` and the footer |
 | Adding a photo | drop it in `assets/img/archive/`, copy an existing `<figure class="shot">` |
+| The logo | inline `<svg class="logo__mark">` in each page's header — coloured by the `--brand-field` / `--brand-on-field` tokens so it follows the theme. `assets/img/brand/logo.svg` is the standalone version, kept for reuse elsewhere |
 | Form questions | `contact.html`, and add the field name to `FIELDS` in `apps-script/Code.gs` |
 
 ### Adding a page
@@ -102,7 +103,8 @@ Degradation is deliberate rather than polyfilled:
 
 - **No JavaScript** — every page still works. The nav renders in full (the
   collapse only engages once the script reveals the toggle), the gallery shows
-  all photos inline, and the form falls back to a pre-filled `mailto:`.
+  all photos inline, and the form falls back to a pre-filled `mailto:`. The
+  theme button is hidden and the site simply follows the OS light/dark setting.
 - **No `:has()` or container queries** — layout falls back to the single-column
   flow rather than breaking.
 - **No view transitions** — pages just navigate normally.
