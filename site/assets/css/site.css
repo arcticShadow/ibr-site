@@ -48,6 +48,9 @@
   --rule-strong: #cdc4b6;
   --accent: var(--hi-600);
   --accent-hover: var(--hi-500);
+  /* Text that sits ON the accent. Flips with the theme, because the dark
+     theme's accent is a light orange that white text cannot sit on. */
+  --accent-ink: #ffffff;
   --link: var(--navy-600);
   --brand: var(--navy-800);
   --focus: var(--hi-500);
@@ -89,6 +92,7 @@
     --rule-strong: #35476b;
     --accent: #ff8b4a;
     --accent-hover: #ffa370;
+    --accent-ink: #24140a;
     --link: #8db4f0;
     --brand: #d7e4fb;
     --focus: #ff8b4a;
@@ -110,6 +114,7 @@
   --rule-strong: #35476b;
   --accent: #ff8b4a;
   --accent-hover: #ffa370;
+  --accent-ink: #24140a;
   --link: #8db4f0;
   --brand: #d7e4fb;
   --focus: #ff8b4a;
@@ -322,7 +327,7 @@ a {
   z-index: 100;
   padding: 0.7rem 1.1rem;
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
   font-weight: 700;
   border-radius: var(--radius);
   transform: translateY(-160%);
@@ -558,7 +563,7 @@ a {
 
 .btn--primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 
   &:hover {
     background: var(--accent-hover);
@@ -628,6 +633,12 @@ a {
     font-size: var(--step-5);
     color: #fff;
     max-width: 17ch;
+  }
+
+  /* --accent is tuned for dark-on-light and only reaches 3.2:1 against the
+     hero. The lighter orange clears AA here. */
+  & .eyebrow {
+    color: var(--hi-400);
   }
 
   & .hero__lede {
